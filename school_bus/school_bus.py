@@ -44,6 +44,60 @@ def optimal_path(graph):
         return (-1, [])
     return (best_ans, [x + 1 for x in best_path])
 
+def optimal_path_dp(graph):
+    from itertools import combinations
+    import math
+    n = len(graph)
+    subsets = []
+
+    minCostDP = {}
+    parent = {}
+    index = {}
+
+    for i in range(n):  # to get all lengths: 0 to 3
+        for subset in combinations(range(1, n), i):
+            subsets.append(subset)
+            index.update({len(index) : subset})
+            
+    print(graph)
+
+    for subset in subsets:
+        for v in range(1, n): 
+            if v in subset: continue
+
+            minCost = math.inf
+            minPrev = 0
+            
+
+            for prev in subset:
+                cost = graph[prev][v]
+                prev_subset = [u if u != prev for u in subset]
+                cost += minCostDP[prev][prev_subset]
+
+                if cost < minCost:
+                    minCost = cost
+                    minPrev = prev
+
+            if not subset:
+                minCost = graph[v][0]
+
+            parent.update({subset : minPrev})
+            minCostDP.update({subset : minCost})
+            print(minCostDP)
+
+
+        
+
+
 
 if __name__ == '__main__':
-    print_answer(*optimal_path(read_data()))
+    # print_answer(*optimal_path(read_data()))
+    graph = read_data()
+    optimal_path_dp(graph)
+# 4 6
+# 1 2 20
+# 1 3 42
+# 1 4 35
+# 2 3 30
+# 2 4 34
+# 3 4 12
